@@ -28,6 +28,8 @@ class Vacancy:
         """Валидация зарплаты. Если зарплата не указана, то возвращается 0"""
         if not salary or salary == "Зарплата не указана":
             return 0
+        if isinstance(salary, int):
+            return salary
         salary = salary.replace(" ", "").replace("руб.", "")
         if "-" in salary:
             salary = salary.split("-")[0]
@@ -45,6 +47,15 @@ class Vacancy:
 
     def __repr__(self):
         return f"Vacancy(title={self.title}, salary={self.salary}, link={self.link})"
+
+    def to_dict(self):
+        """Преобразует объект Vacancy в словарь."""
+        return {
+            "title": self.title,
+            "link": self.link,
+            "salary": self.salary,
+            "description": self.description,
+        }
 
     @classmethod
     def cast_to_object_list(cls, vacancies_data: list):

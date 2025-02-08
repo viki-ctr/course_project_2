@@ -35,7 +35,7 @@ exclude = 'venv'
 
 [tool.black]
 line-length = 119
-xclude = '''
+exclude = '''
 (
   /(
       \.eggs

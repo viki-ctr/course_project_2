@@ -1,17 +1,19 @@
 import json
+
 from src.parent_to_json_saver import Storage
 from src.work_with_vacancies import Vacancy
 
 
 class JSONSaver(Storage):
     """Класс для сохранения вакансий в файл"""
+
     def __init__(self, filename="vacancies.json"):
         self.filename = filename
 
     def add_vacancy(self, vacancy: Vacancy):
         """Добавление вакансий"""
         data = self._load_data()
-        data.append(vacancy.__dict__)
+        data.append(vacancy.to_dict())
         self._save_data(data)
 
     def get_vacancies(self, criteria: dict):
