@@ -15,17 +15,13 @@ class HeadHunterAPI(JobPlatformApi):
         params = {"text": query, "page": kwargs.get("page", 0), "per_page": kwargs.get("per_page", 100)}
         response = self.__session.get(self.__url, params=params)
         if response.status_code == 200:
-            return response.json()
+            data = response.json()
+            if isinstance(data, dict) and "items" in data:
+                return data["items"]
+            else:
+                raise ValueError("Ответ от API не содержит ключ 'items'")
         else:
             raise Exception(f"API request failed with status code: {response.status_code}")
 
     def get_vacancies(self, query: str, **kwargs):
         return self.__get_vacancies(query, **kwargs)
-
-
-if __name__ == "__main__":
-    hh_api = HeadHunterAPI()
-    vacancies = hh_api.get_vacancies("Python Developer", page=0, per_page=10)
-    if vacancies:
-        for vacancy in vacancies.get("items", []):
-            print(f"Vacancy: {vacancy['name']}, Salary: {vacancy.get('salary', 'Not specified')}")

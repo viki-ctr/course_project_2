@@ -29,9 +29,13 @@ def test_get_vacancies_success():
     with requests_mock.Mocker() as m:
         m.get(mock_url, json=mock_response, status_code=200)
         result = api.get_vacancies(mock_query)
-        assert result == mock_response, f"Ожидался ответ {mock_response}, но получен {result}"
-        assert "items" in result, "Ответ должен содержать ключ 'items'"
-        assert len(result["items"]) == 2, "Ожидалось 2 вакансии в ответе"
+        expected_items = mock_response["items"]
+
+        assert result == expected_items, f"Ожидался ответ {expected_items}, но получен {result}"
+        assert len(result) == 2, f"Ожидалось 2 вакансии, но получено {len(result)}"
+        first_vacancy = result[0]
+        assert first_vacancy["name"] == "Python Developer", "Название первой вакансии не совпадает"
+        assert first_vacancy["salary"]["from"] == 100000, "Зарплата первой вакансии не совпадает"
 
 
 def test_get_vacancies_failure():

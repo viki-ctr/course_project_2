@@ -26,7 +26,7 @@ class Vacancy:
 
     def __validate_salary(self, salary):
         """Валидация зарплаты. Если зарплата не указана, то возвращается 0"""
-        if not salary or salary == "Зарплата не указана":
+        if salary is None or salary == "Зарплата не указана":
             return 0
         if isinstance(salary, int):
             return salary
@@ -64,7 +64,7 @@ class Vacancy:
         for item in vacancies_data:
             title = item.get("name")
             link = item.get("alternate_url")
-            salary = item.get("salary", {}).get("from") if item.get("salary") else "Зарплата не указана"
+            salary = item.get("salary", {}).get("from") if item.get("salary") else None
             description = item.get("snippet", {}).get("requirement", "")
             vacancies.append(cls(title, link, salary, description))
         return vacancies

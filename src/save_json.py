@@ -19,7 +19,13 @@ class JSONSaver(Storage):
     def get_vacancies(self, criteria: dict):
         """Получение вакансий"""
         data = self._load_data()
-        return [item for item in data if all(item.get(key) == value for key, value in criteria.items())]
+        filtered_vacancies = []
+
+        for item in data:
+            if all(keyword.lower() in item.get(key, "").lower()for key, keyword in criteria.items()):
+                filtered_vacancies.append(item)
+        return filtered_vacancies
+        # return [item for item in data if all(item.get(key) == value for key, value in criteria.items())]
 
     def delete_vacancy(self, vacancy_id: str):
         """Удаление вакансий"""
@@ -30,12 +36,12 @@ class JSONSaver(Storage):
     def _load_data(self):
         """Чтение файла (преобразование в объект Python)"""
         try:
-            with open(self.filename, "r") as file:
+            with open(self.filename, "r", encoding="utf-8") as file:
                 return json.load(file)
         except FileNotFoundError:
             return []
 
     def _save_data(self, data):
         """Запись файла (преобразование объекта Python в JSON"""
-        with open(self.filename, "w") as file:
+        with open(self.filename, "w", encoding="utf-8") as file:
             json.dump(data, file, indent=4)

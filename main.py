@@ -5,7 +5,7 @@ from src.work_with_vacancies import Vacancy
 
 def user_interaction():
     hh_api = HeadHunterAPI()
-    storage = JSONSaver("vacancies.json")
+    storage = JSONSaver()
 
     query = input("Введите поисковый запрос: ")
     vacancies_data = hh_api.get_vacancies(query)
@@ -14,7 +14,7 @@ def user_interaction():
         Vacancy(
             item.get("name", "Без названия"),
             item.get("alternate_url", "#"),
-            item.get("salary", {}).get("from", 0),
+            item.get("salary", {}).get("from") if item.get("salary") else 0,
             item.get("snippet", {}).get("requirement", "Описание отсутствует")
         )
         for item in vacancies_data
@@ -29,7 +29,7 @@ def user_interaction():
         print(vacancy)
 
     keyword = input("Введите ключевое слово для фильтрации: ")
-    filtered_vacancies = storage.get_vacancies({"description": keyword})
+    filtered_vacancies = storage.get_vacancies({"title": keyword, "description": keyword})
     print("Отфильтрованные вакансии:")
     for vacancy in filtered_vacancies:
         print(vacancy)
